@@ -7,8 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
-import static org.quartz.DateBuilder.dateOf;
-import static org.quartz.DateBuilder.futureDate;
+import static org.quartz.DateBuilder.*;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
 
@@ -82,6 +81,23 @@ public class SimpleTrigger {
                         .withIntervalInMinutes(5)
                         .repeatForever())
                 .endAt(dateOf(22, 0, 0))
+                .build();
+    }
+
+    /**
+     * 建立一个触发器，将在下一个小时的整点触发，然后每2小时重复一次
+     */
+    public void hourGo() {
+        trigger = (SimpleTrigger) newTrigger()
+                // because group is not specified, "trigger8" will be in the default group
+                .withIdentity("trigger8")
+                // get the next even-hour (minutes and seconds zero ("00:00"))
+                .startAt(evenHourDate(null))
+                .withSchedule(simpleSchedule()
+                        .withIntervalInHours(2)
+                        .repeatForever())
+                // note that in this example, 'forJob(..)' is not called which is valid
+                // if the trigger is passed to the scheduler along with the job
                 .build();
     }
 }
